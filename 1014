@@ -1,0 +1,58 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "properties": {
+        "markdown": "请选择一个选项:"
+      }
+    },
+    {
+      "type": "dropdown",
+      "properties": {
+        "label": "选项",
+        "options": [
+          {
+            "label": "选项 A",
+            "value": "a"
+          },
+          {
+            "label": "选项 B",
+            "value": "b"
+          }
+        ],
+        "onChange": {
+          "type": "query",
+          "query": {
+            "expression": {
+              "Fn::If": [
+                {
+                  "Fn::Equals": ["$selectedValue", "a"]
+                },
+                "a1",
+                {
+                  "Fn::If": [
+                    {
+                      "Fn::Equals": ["$selectedValue", "b"]
+                    },
+                    "b1",
+                    "默认值"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          ["AWS/Service", "MetricName", "DimensionName", { "stat": "Average" }]
+        ],
+        "region": "us-east-1",
+        "title": "根据选项查询的值"
+      }
+    }
+  ]
+}
