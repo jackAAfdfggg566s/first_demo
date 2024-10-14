@@ -1,0 +1,54 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "properties": {
+        "markdown": "# 选择一个选项:"
+      }
+    },
+    {
+      "type": "variable",
+      "properties": {
+        "name": "选择项",
+        "default": "a",
+        "values": [
+          {
+            "label": "选项 A",
+            "value": "a"
+          },
+          {
+            "label": "选项 B",
+            "value": "b"
+          }
+        ]
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Service",
+            "MetricName",
+            "DimensionName",
+            {
+              "stat": "Average",
+              "period": 300,
+              "label": {
+                "Fn::If": [
+                  {
+                    "Fn::Equals": ["${选择项}", "a"]
+                  },
+                  "a1",
+                  "b1"
+                ]
+              }
+            }
+          ]
+        ],
+        "region": "us-east-1",
+        "title": "根据选项查询的值"
+      }
+    }
+  ]
+}
