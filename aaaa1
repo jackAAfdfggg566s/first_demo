@@ -1,0 +1,44 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "properties": {
+        "markdown": "# Pod CPU Utilization"
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "title": "CPU Utilization",
+        "region": "us-west-2",
+        "metrics": [
+          [ "AWS/ContainerInsights", "CPUUtilization", "ClusterName", "your-cluster-name", "Namespace", "${namespace}", "PodName", "${pod}" ]
+        ],
+        "period": 300,
+        "stat": "Average",
+        "view": "timeSeries",
+        "stacked": false,
+        "legend": {
+          "position": "right"
+        }
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "option",
+      "query": "['a', 'b', 'c']",
+      "defaultValue": "a"
+    },
+    {
+      "name": "namespace",
+      "query": "if('${option}' == 'a', 'a1', if('${option}' == 'b', 'b1', 'c1'))",
+      "defaultValue": "a1"
+    },
+    {
+      "name": "pod",
+      "query": "distinct(PodName) as pod",
+      "defaultValue": "all"
+    }
+  ]
+}
