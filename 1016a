@@ -1,0 +1,62 @@
+要在CloudWatch日志中包含Pod名称和节点的AZ信息，你需要确保在Kubernetes集群中配置适当的日志记录。以下是如何做到这一点的步骤：
+
+1. 配置日志收集工具
+使用工具（如Fluent Bit、Fluentd或AWS CloudWatch Agent）将Kubernetes日志收集到CloudWatch Logs。这些工具能够提取Pod信息，并将其添加到日志中。
+
+2. 示例配置（Fluent Bit）
+如果使用Fluent Bit，可以在其配置中添加相关标签以捕获Pod信息。
+
+Fluent Bit示例配置：
+ini
+复制代码
+[INPUT]
+    Name              kubernetes
+    Tag               kube.*
+    kube_tag_prefix   kube.var.log.containers.
+
+[OUTPUT]
+    Name              cloudwatch
+    Match             kube.*
+    region            us-east-1
+    log_group_name    your-log-group
+    log_stream_name   {instance_id}
+    auto_create_group true
+
+[FILTER]
+    Name              kubernetes
+    Match             kube.*
+    Merge_Log         On
+    Keep_Log          Off
+    Kube_Meta_Preload On
+3. 确保日志包含Pod名称
+当Pod生成日志时，Fluent Bit会捕获Pod的元数据，包括Pod名称、命名空间、节点名称等。这样，日志消息可能会自动包含Pod名称。
+
+4. 示例日志格式
+假设你的Pod在运行某个应用时生成日志，Fluent Bit将日志收集并发送到CloudWatch。示例日志格式可能如下：
+
+json
+复制代码
+{
+  "log": "Error occurred while processing request",
+  "kubernetes": {
+    "pod_name": "example-pod",
+    "namespace_name": "default",
+    "container_name": "example-container",
+    "host": "example-node",
+    "labels": {
+      "topology.kubernetes.io/zone": "us-east-1a"
+    }
+  },
+  "timestamp": "2023-10-15T12:00:00Z"
+}
+5. 查询Pod名称和AZ信息
+一旦日志包含Pod名称和AZ信息，你可以在CloudWatch Logs Insights中使用以下查询来提取所需信息：
+
+sql
+复制代码
+fields @timestamp, kubernetes.pod_name, kubernetes.host, kubernetes.labels.topology_kubernetes_io_zone
+| sort @timestamp desc
+6. 创建CloudWatch Dashboard
+登录AWS Management Console，打开CloudWatch。
+创建Dashboard并添加Widgets，使用Insights查询展示Pod名称和AZ信息。
+通过这些步骤，你可以确保在CloudWatch日志中捕获Pod名称和相关的AZ信息，从而进行有效的监控和可视化。
