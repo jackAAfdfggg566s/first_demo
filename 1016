@@ -1,0 +1,51 @@
+要在CloudWatch Insights大盘中获取Pod所在节点的AZ信息，并展示相应的自定义指标，你可以按照以下步骤进行：
+
+1. 确保自定义指标已上传
+
+首先，确保你已经通过以下命令上传了节点的AZ信息到CloudWatch：
+
+bash
+
+复制代码
+
+aws cloudwatch put-metric-data \ --metric-name NodeAZ \ --namespace Kubernetes \ --dimensions NodeName=<node-name>,AZ=<az-name> \ --value 1 \ --unit Count 
+
+2. 使用CloudWatch Logs Insights查询
+
+CloudWatch Insights通常用于查询和分析日志，而不是直接查询指标。你需要确保在你的Kubernetes集群中有适当的日志记录，包含Pod和节点的AZ信息。可以使用Fluent Bit或其他日志收集工具将Pod信息发送到CloudWatch Logs。
+
+3. 示例日志格式
+
+假设你已经有日志记录了Pod和节点的AZ信息，日志格式可能如下：
+
+json
+
+复制代码
+
+{ "pod_name": "example-pod", "node_name": "example-node", "az": "us-east-1a" } 
+
+4. 编写CloudWatch Logs Insights查询
+
+你可以在CloudWatch Logs Insights中运行以下查询来获取Pod所在节点的AZ信息：
+
+sql
+
+复制代码
+
+fields @timestamp, @message | filter pod_name = "example-pod" | parse @message "node_name: *" as node_name | parse @message "az: *" as az | display pod_name, node_name, az, @timestamp | sort @timestamp desc 
+
+5. 创建CloudWatch Dashboard
+
+登录AWS Management Console，打开CloudWatch。
+
+在左侧导航栏中选择“Dashboards”，然后点击“Create dashboard”。
+
+输入名称并点击“Create”.
+
+选择“Add widget”，选择“Logs”类型，使用之前的查询来展示信息。
+
+6. 定期更新数据
+
+确保你的日志记录持续更新Pod和节点的AZ信息，以便在CloudWatch中实时查看。
+
+通过这些步骤，你可以在CloudWatch中通过Insights展示Pod所在节点的AZ信息。确保正确配置日志记录和查询，以便获取想要的结果。
