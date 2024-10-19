@@ -1,0 +1,31 @@
+{
+  "metrics": [
+    {
+      "namespace": "EKS",
+      "metricName": "PodCPUUsage",
+      "dimensions": {
+        "ClusterName": "<your-cluster-name>",
+        "Namespace": "<your-namespace>"
+      },
+      "statistic": "Average",
+      "period": 60,
+      "unit": "Count",
+      "filter": {
+        "pod_status_ready": true,
+        "pod_status_phase": "Running"
+      },
+      "query": "sum(rate(container_cpu_usage_seconds_total{cluster=\"<your-cluster-name>\",namespace=\"<your-namespace>\", pod_status_ready=\"true\", pod_status_phase=\"Running\"}[5m])) by (pod)"
+    }
+  ],
+  "title": "EKS Pod CPU Usage",
+  "type": "Graph",
+  "properties": {
+    "yAxis": {
+      "label": "CPU Usage (cores)",
+      "min": 0
+    },
+    "xAxis": {
+      "label": "Time"
+    }
+  }
+}
