@@ -1,0 +1,47 @@
+要在 CloudWatch 中创建一个仪表板 JSON，按 topology.kubernetes.io/zone 标签进行分组，您可以使用以下示例结构。假设您已经设置好自定义指标并且想要按可用区显示 Pod 数量。
+
+示例 JSON
+json
+复制代码
+{
+  "DashboardName": "EKS Pod AZ Dashboard",
+  "Widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "AWS/EKS", "PodCount", "ClusterName", "<your-cluster-name>", "Zone", "$.topology.kubernetes.io/zone" ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "<your-region>",
+        "period": 300,
+        "title": "Pod Count by AZ",
+        "yAxis": {
+          "left": {
+            "label": "Pod Count",
+            "min": 0
+          }
+        }
+      }
+    }
+  ]
+}
+说明
+DashboardName: 仪表板的名称。
+Metrics: 用于获取 Pod 数量的指标，替换 <your-cluster-name> 和 <your-region> 为实际值。
+Zone: 在 metrics 中，"Zone", "$.topology.kubernetes.io/zone" 用于按可用区分组。
+Title: 图表的标题。
+创建仪表板
+可以使用 AWS CLI 将此 JSON 导入 CloudWatch：
+
+bash
+复制代码
+aws cloudwatch create-dashboard --dashboard-name "EKS Pod AZ Dashboard" --dashboard-body file://path/to/dashboard.json
+确保路径指向包含上述 JSON 内容的文件。
+
+这样，您就可以在 CloudWatch 中创建一个按可用区分组的仪表板，展示 EKS Pod 的信息。
