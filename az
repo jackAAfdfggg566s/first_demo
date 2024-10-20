@@ -1,0 +1,53 @@
+在 Kubernetes 中，Pod 的可用区（AZ）信息通常通过标签自动分配，具体标签为 topology.kubernetes.io/zone（以前是 failure-domain.beta.kubernetes.io/zone）。这些标签由 Kubernetes 根据节点的可用区信息自动设置。
+
+定义 AZ 标签的步骤
+节点标签：确保您的 EKS 集群中的节点具有可用区标签。可以通过以下命令检查节点标签：
+
+bash
+复制代码
+kubectl get nodes --show-labels
+您应该能看到类似 topology.kubernetes.io/zone=<zone> 的标签。
+
+Pod 标签：在创建 Pod 时，可以选择将这些标签传递给 Pod。这通常在 Deployment 或 StatefulSet 的模板中进行配置。
+
+示例 YAML：
+
+yaml
+复制代码
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: example
+  template:
+    metadata:
+      labels:
+        app: example
+    spec:
+      containers:
+        - name: example-container
+          image: example-image
+如果您希望将 Pod 按可用区进行调度，可以使用亲和性（affinity）来指定：
+
+yaml
+复制代码
+spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: topology.kubernetes.io/zone
+                operator: In
+                values:
+                  - <desired-zone>
+在 CloudWatch 中使用
+在 CloudWatch 中创建仪表板时，您可以根据 Pod 的 AZ 标签进行分组：
+
+选择自定义指标：在创建图表时，选择与 Pod 状态相关的自定义指标。
+分组配置：在图表配置中，将分组设置为 topology.kubernetes.io/zone 标签。
+这样就可以在 CloudWatch 仪表板中按可用区展示 Pod 的状态和其他相关指标。
