@@ -1,0 +1,24 @@
+# 第一个子查询
+fields @timestamp, requestId, statusCode
+| filter logGroup = "logGroup1"
+| sort @timestamp desc
+| limit 100
+
+# 第二个子查询
+| join (
+  fields @timestamp, requestId, errorMessage
+  | filter logGroup = "logGroup2"
+  | sort @timestamp desc
+  | limit 100
+) on requestId
+
+| display @timestamp, requestId, statusCode, errorMessage
+| sort @timestamp desc
+
+第一个子查询从 logGroup1 中获取 requestId 和 statusCode。
+
+第二个子查询从 logGroup2 中获取 requestId 和 errorMessage。
+
+使用 join 操作将两个子查询结果基于 requestId 字段进行联合。
+
+最后，使用 display 和 sort 显示合并后的结果。
