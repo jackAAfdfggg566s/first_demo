@@ -1,0 +1,18 @@
+{
+  "DashboardName": "EKS Pod Running Time",
+  "Widgets": [
+    {
+      "type": "logs",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "query": "fields @timestamp, pod_name, namespace | filter namespace = '<your-namespace>' | filter pod_name = '<your-pod-name>' | sort @timestamp asc | display @timestamp, pod_name, namespace, (dateDiff('second', min(@timestamp), max(@timestamp))) as running_time_seconds",
+        "region": "<your-region>",
+        "stacked": false,
+        "title": "Pod Running Time"
+      }
+    }
+  ]
+}
