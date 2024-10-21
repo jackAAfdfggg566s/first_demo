@@ -1,0 +1,48 @@
+要在创建 Pod 时自动获取可用区（AZ）信息并打标签，可以使用 Kubernetes 的 initContainer 和 Downward API。以下是一个示例配置来实现这一目标：
+
+步骤1：使用 Downward API 获取 AZ 信息
+您可以通过使用 Downward API 和 initContainer 来为 Pod 添加 AZ 标签。以下是一个示例 YAML 文件：
+
+yaml
+复制代码
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  containers:
+  - name: main-container
+    image: your-image
+    env:
+      - name: AZ
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.labels['topology.kubernetes.io/zone']
+    # 其他配置...
+  initContainers:
+  - name: set-az-label
+    image: amazonlinux
+    command: ['sh', '-c', 'echo "Setting label for pod in AZ: $AZ"']
+    env:
+      - name: AZ
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.labels['topology.kubernetes.io/zone']
+  nodeSelector:
+    topology.kubernetes.io/zone: your-az  # 替换为实际的 AZ
+步骤2：创建 Pod
+将上述内容保存为 pod.yaml，然后使用以下命令创建 Pod：
+
+bash
+复制代码
+kubectl apply -f pod.yaml
+步骤3：验证标签
+Pod 创建后，您可以检查标签是否已被添加：
+
+bash
+复制代码
+kubectl get pods --show-labels
+注意事项
+确保节点上有 AZ 标签：请确保您的 EKS 节点已经使用 topology.kubernetes.io/zone 标签进行标记。
+Node Selector：在 nodeSelector 中指定的可用区应与您的节点标签匹配。
+这种方法能够确保在 Pod 创建时自动获取节点的 AZ 信息，并可以在容器中使用这个信息。
