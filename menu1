@@ -1,0 +1,60 @@
+{
+  "widgets": [
+    {
+      "type": "text",
+      "properties": {
+        "markdown": "# Performance Metrics Dashboard"
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "AWS/ContainerInsights", "CPUUtilization", "ClusterName", "${ClusterName}", "Namespace", "${Namespace}", "PodName", "${PodName}" ],
+          [ "AWS/ContainerInsights", "MemoryUtilization", "ClusterName", "${ClusterName}", "Namespace", "${Namespace}", "PodName", "${PodName}" ]
+        ],
+        "view": "timeSeries",
+        "stacked": false,
+        "region": "us-east-1",
+        "title": "Performance Metrics"
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "name": "ClusterName",
+      "type": "StringParameter",
+      "default": "cluster1",
+      "values": [ "cluster1", "cluster2", "cluster3" ]
+    },
+    {
+      "name": "Namespace",
+      "type": "StringParameter",
+      "default": "namespace1",
+      "values": [ "namespace1", "namespace2", "namespace3" ]
+    },
+    {
+      "name": "PodName",
+      "type": "StringParameter",
+      "default": "pod1",
+      "values": [ "pod1", "pod2", "pod3" ]
+    }
+  ],
+  "variables": [
+    {
+      "name": "ClusterVariable",
+      "inputType": "select",
+      "parameters": ["ClusterName"]
+    },
+    {
+      "name": "NamespaceVariable",
+      "inputType": "select",
+      "parameters": ["Namespace"]
+    },
+    {
+      "name": "PodVariable",
+      "inputType": "select",
+      "parameters": ["PodName"]
+    }
+  ]
+}
