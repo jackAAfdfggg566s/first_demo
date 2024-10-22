@@ -1,0 +1,66 @@
+创建仪表板：在CloudWatch中，创建一个新的仪表板。
+
+添加小部件：为每个级别（集群、命名空间、Pod）添加不同的小部件。
+
+使用查询语句：
+
+对于集群，你可以使用如下的CloudWatch Logs Insights查询：
+
+sql
+复制代码
+fields @timestamp, @message
+| filter clusterName = 'your-cluster-name'
+| sort @timestamp desc
+对于命名空间，可以添加筛选条件：
+
+sql
+复制代码
+fields @timestamp, @message
+| filter clusterName = 'your-cluster-name' and namespace = 'your-namespace'
+| sort @timestamp desc
+对于Pod，再添加进一步的筛选：
+
+sql
+复制代码
+fields @timestamp, @message
+| filter clusterName = 'your-cluster-name' and namespace = 'your-namespace' and podName = 'your-pod-name'
+| sort @timestamp desc
+使用参数：你可以通过在仪表板中添加参数（如下拉菜单）来动态选择不同的集群、命名空间和Pod，从而实现多级菜单的效果。
+
+JSON配置：对于仪表板的JSON配置，你可以参考以下结构，确保包含参数和小部件的设置：
+
+json
+复制代码
+{
+  "widgets": [
+    {
+      "type": "text",
+      "properties": {
+        "markdown": "# Select Cluster"
+      }
+    },
+    {
+      "type": "metric",
+      "properties": {
+        "metrics": [
+          [ "AWS/ContainerInsights", "your-metric-name", "ClusterName", "${ClusterName}", "Namespace", "${Namespace}", "PodName", "${PodName}" ]
+        ],
+        "view": "timeSeries"
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "name": "ClusterName",
+      "values": [ "cluster1", "cluster2" ]
+    },
+    {
+      "name": "Namespace",
+      "values": [ "namespace1", "namespace2" ]
+    },
+    {
+      "name": "PodName",
+      "values": [ "pod1", "pod2" ]
+    }
+  ]
+}
