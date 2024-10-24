@@ -1,0 +1,50 @@
+要在 AWS CloudWatch Insights 中使用 JSON 格式创建变量并添加搜索功能，下面是如何设置 fullPodName 变量，结合 cluster, namespace 和 pod name 的搜索条件的示例。
+
+JSON 配置示例
+以下是一个示例 JSON 配置，展示如何设置变量和条件筛选：
+
+json
+复制代码
+{
+  "variables": [
+    {
+      "name": "cluster",
+      "label": "Cluster",
+      "type": "select",
+      "query": "SELECT DISTINCT(cluster_name) FROM my_container_logs"
+    },
+    {
+      "name": "namespace",
+      "label": "Namespace",
+      "type": "select",
+      "query": "SELECT DISTINCT(namespace) FROM my_container_logs WHERE cluster_name = '${cluster}'"
+    },
+    {
+      "name": "fullPodName",
+      "label": "Full Pod Name",
+      "type": "search",
+      "query": "SELECT DISTINCT(CONCAT(cluster_name, '/', namespace, '/', pod_name)) AS full_pod_name FROM my_container_logs WHERE cluster_name = '${cluster}' AND namespace = '${namespace}'"
+    }
+  ]
+}
+说明
+cluster 变量：
+
+这是第一个下拉框，用于选择集群名称。
+namespace 变量：
+
+这是第二个下拉框，过滤选项依据所选的 cluster 变量。
+fullPodName 变量：
+
+这是一个搜索框，用户可以根据所选的 cluster 和 namespace 搜索完整的 Pod 名称。
+使用 CONCAT 函数来拼接 cluster_name, namespace 和 pod_name，形成 full pod name。
+应用变量
+在面板的查询中使用这些变量，如下所示：
+
+sql
+复制代码
+SELECT * FROM my_container_logs 
+WHERE CONCAT(cluster_name, '/', namespace, '/', pod_name) = '${fullPodName}'
+保存和查看
+保存你的设置后，用户可以通过选择不同的 cluster 和 namespace，然后在搜索框中输入关键字来筛选特定的 full pod name。
+这样，你就可以通过 JSON 配置实现 AWS CloudWatch Insights 中的动态筛选功能。
