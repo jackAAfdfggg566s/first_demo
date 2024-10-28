@@ -1,0 +1,108 @@
+使用Java的QuickFIX库解析FIX协议的消息，可以通过读取和处理FIX消息的文本格式来实现。以下是一个示例，演示如何读取FIX消息并解析其中的信息。
+
+1. 准备FIX消息文件
+首先，准备一个包含FIX消息的文本文件，例如fix_messages.txt，内容如下：
+
+mathematica
+复制代码
+8=FIX.4.2|35=D|34=1|49=YOUR_SENDER_ID|56=YOUR_TARGET_ID|11=12345|54=1|55=AAPL|44=150.00|10=234|
+8=FIX.4.2|35=E|34=2|49=YOUR_SENDER_ID|56=YOUR_TARGET_ID|11=12346|54=2|55=GOOGL|44=2500.00|10=235|
+2. 创建Java应用程序
+下面的Java程序将读取fix_messages.txt文件中的FIX消息，并使用QuickFIX解析它们：
+
+java
+复制代码
+import quickfix.Message;
+import quickfix.StringField;
+import quickfix.field.ClOrdID;
+import quickfix.field.OrdType;
+import quickfix.field.Symbol;
+import quickfix.field.Price;
+import quickfix.field.Side;
+import quickfix.FieldNotFound;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class FixMessageParser {
+
+    public static void main(String[] args) {
+        String filePath = "fix_messages.txt"; // 文件路径
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // 用"|"分割FIX消息
+                String[] fields = line.split("\\|");
+                Message message = new Message();
+
+                // 添加字段到消息中
+                for (String field : fields) {
+                    String[] keyValue = field.split("=");
+                    if (keyValue.length == 2) {
+                        message.setField(new StringField(Integer.parseInt(keyValue[0]), keyValue[1]));
+                    }
+                }
+
+                // 解析消息
+                parseFixMessage(message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (FieldNotFound e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void parseFixMessage(Message message) {
+        try {
+            System.out.println("Received message: " + message);
+
+            if (message.isSetField(OrdType.TAG)) {
+                OrdType ordType = new OrdType();
+                message.getField(ordType);
+                System.out.println("Order Type: " + ordType.getValue());
+            }
+            if (message.isSetField(Symbol.TAG)) {
+                Symbol symbol = new Symbol();
+                message.getField(symbol);
+                System.out.println("Symbol: " + symbol.getValue());
+            }
+            if (message.isSetField(Price.TAG)) {
+                Price price = new Price();
+                message.getField(price);
+                System.out.println("Price: " + price.getValue());
+            }
+            if (message.isSetField(Side.TAG)) {
+                Side side = new Side();
+                message.getField(side);
+                System.out.println("Side: " + side.getValue());
+            }
+            if (message.isSetField(ClOrdID.TAG)) {
+                ClOrdID clOrdID = new ClOrdID();
+                message.getField(clOrdID);
+                System.out.println("ClOrdID: " + clOrdID.getValue());
+            }
+        } catch (FieldNotFound e) {
+            e.printStackTrace();
+        }
+    }
+}
+3. 运行示例
+确保你的环境中已安装Java。
+创建包含FIX消息的文件fix_messages.txt。
+编译并运行这个Java程序。
+4. 输出结果
+程序将读取FIX消息并解析其中的信息，输出类似如下的信息：
+
+yaml
+复制代码
+Received message: ...
+Order Type: ...
+Symbol: AAPL
+Price: 150.00
+Side: 1
+ClOrdID: 12345
+...
+参考文档
+你可以访问QuickFIX文档以获取更多信息和详细示例。
