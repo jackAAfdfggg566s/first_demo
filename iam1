@@ -1,0 +1,66 @@
+为了让 IAM 角色能够创建和管理 Amazon EventBridge 规则，您需要授予适当的权限。以下是设置最低 IAM 角色权限的步骤和示例策略。
+
+1. 创建 IAM 角色
+登录到 AWS 管理控制台。
+导航到 IAM。
+点击 Roles（角色） > Create role（创建角色）。
+2. 选择信任关系
+在 Trusted entity type 选择 AWS service。
+在 Use case 中选择 EventBridge。
+3. 附加权限策略
+在附加权限策略的步骤中，您可以选择创建自定义策略。点击 Create policy。
+
+自定义权限策略示例
+以下是一个示例 IAM 策略，允许创建、修改和删除 EventBridge 规则：
+
+json
+复制代码
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "events:PutRule",
+                "events:PutTargets",
+                "events:RemoveTargets",
+                "events:DeleteRule",
+                "events:DescribeRule",
+                "events:ListRules",
+                "events:ListTargetsByRule"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+4. 完成角色创建
+创建自定义策略后，将其附加到角色上。
+为角色命名（例如 EventBridgeManagementRole），并完成创建。
+5. 使用角色
+在您需要的服务中（如 FIS 或其他 AWS 服务），选择刚刚创建的 IAM 角色，以便这些服务可以使用该角色进行 EventBridge 操作。
+
+示例 IAM 角色策略
+完整的 IAM 角色策略示例如下：
+
+json
+复制代码
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "events:PutRule",
+                "events:PutTargets",
+                "events:RemoveTargets",
+                "events:DeleteRule",
+                "events:DescribeRule",
+                "events:ListRules",
+                "events:ListTargetsByRule"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+总结
+按照上述步骤，您将能够创建一个具有最低权限的 IAM 角色，使其能够管理 Amazon EventBridge 规则。请根据实际需要进一步细化权限，确保遵循最小权限原则。
