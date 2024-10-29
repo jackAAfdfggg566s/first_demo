@@ -1,0 +1,53 @@
+为了使 AWS EventBridge 能够触发 AWS FIS 实验，您需要为 EventBridge 创建一个 IAM 角色，并授予该角色所需的权限。以下是设置最低 IAM 角色的步骤：
+
+1. 创建 IAM 角色
+登录到 AWS 管理控制台。
+导航到 IAM。
+点击 Roles（角色） > Create role（创建角色）。
+2. 选择信任关系
+在 Trusted entity type 选择 AWS service。
+在 Use case 中选择 EventBridge。
+3. 附加权限策略
+在附加权限策略的步骤中，您可以选择创建自定义策略。点击 Create policy。
+
+自定义权限策略示例
+使用以下 JSON 策略授予 EventBridge 启动 FIS 实验的权限：
+
+json
+复制代码
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "fis:StartExperiment",
+            "Resource": "arn:aws:fis:<region>:<account-id>:experiment-template/<experiment-template-name>"
+        }
+    ]
+}
+<region>: 替换为您的 AWS 区域（例如 us-east-1）。
+<account-id>: 替换为您的 AWS 账户 ID。
+<experiment-template-name>: 替换为您创建的 FIS 实验模板的名称。
+4. 完成角色创建
+创建自定义策略后，将其附加到角色上。
+为角色命名（例如 EventBridgeFISRole），并完成创建。
+5. 使用角色
+在 EventBridge 规则中，选择刚刚创建的 IAM 角色，以便 EventBridge 能够使用该角色启动 FIS 实验。
+
+示例 IAM 角色策略
+完整的 IAM 角色策略示例如下：
+
+json
+复制代码
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "fis:StartExperiment",
+            "Resource": "arn:aws:fis:us-east-1:123456789012:experiment-template/my-fis-experiment"
+        }
+    ]
+}
+总结
+按照上述步骤，您将能够创建一个最低权限的 IAM 角色，使 AWS EventBridge 能够定时触发 FIS 实验。确保将策略中的占位符替换为您自己的信息，以确保配置正确。
