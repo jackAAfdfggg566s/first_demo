@@ -1,0 +1,32 @@
+Here’s a structured overview of AWS FIS targets and actions for your presentation:
+
+Slide 1: Introduction to AWS FIS Targets and Actions
+Overview: AWS Fault Injection Simulator (FIS) allows users to create controlled experiments that inject faults into their applications to test resilience.
+Slide 2: FIS Targets
+Definition: Targets are the resources on which the fault injection actions will be applied.
+Types of Targets:
+EC2 Instances: Inject failures or delays in virtual machines.
+ECS Tasks: Test containerized applications by simulating task failures.
+EKS Pods: Evaluate Kubernetes applications by injecting faults at the pod level.
+API Gateway: Simulate API call failures or latency.
+Custom Targets: Define specific resources using tags or resource IDs.
+Slide 3: FIS Actions
+Definition: Actions are the specific faults that you can inject into the targets.
+Types of Actions:
+Terminate: Stop or terminate EC2 instances or ECS tasks.
+Delay: Introduce artificial latency in network calls.
+Throttle: Limit the bandwidth of API Gateway requests.
+Reboot: Restart EC2 instances to test recovery processes.
+Network Disruption: Simulate network issues like packet loss or DNS failures.
+Slide 4: Combining Targets and Actions
+Experiment Design: Users can define experiments by selecting specific targets and corresponding actions.
+Example Scenario:
+Target: EC2 Instance
+Action: Introduce a 10-second delay on network requests.
+Goal: Assess how the application behaves under simulated network latency.
+Slide 5: Monitoring and Analysis
+Real-Time Monitoring: Use AWS CloudWatch to observe metrics during experiments.
+Post-Experiment Analysis: Evaluate the impact of injected faults on application performance and stability.
+Slide 6: Conclusion
+Benefits of Targets and Actions: Allows for comprehensive testing of application resilience and helps teams identify weaknesses and improve reliability.
+Feel free to adapt any of the points to better fit your presentation needs!
