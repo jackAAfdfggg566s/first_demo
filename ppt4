@@ -1,0 +1,12 @@
+Sure! Here’s the revised Slide 4 focusing on the EC2 Terminate example:
+
+Slide 4: Combining Targets and Actions
+Experiment Design: Users can define experiments by selecting specific targets and corresponding actions.
+Example Scenario:
+Target: EC2 Instance
+Action: Terminate the instance.
+Goal: Assess the application’s behavior and recovery mechanisms when an EC2 instance is abruptly terminated.
+Slide 5: Monitoring and Analysis
+Real-Time Monitoring: Use AWS CloudWatch to observe metrics during experiments.
+Post-Experiment Analysis: Evaluate the impact of the instance termination on application performance and stability.
+Feel free to modify any part further if needed!
