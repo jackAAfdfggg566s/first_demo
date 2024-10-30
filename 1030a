@@ -1,0 +1,43 @@
+要在CloudWatch仪表板中创建一个时序图，展示EKS Pod的CPU使用情况，并按完整Pod名称（Full Pod Name）进行分组（stat: AVG），你需要使用日志查询并确保能从Container Insights中提取所需数据。
+
+以下是一个示例JSON配置，用于展示按完整Pod名称分组的平均CPU使用情况。
+
+JSON示例
+json
+复制代码
+{
+  "DashboardName": "EKS-CPUDashboard",
+  "Widgets": [
+    {
+      "type": "log",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "query": "fields @timestamp, @message | filter @message like /cpu_usage/ | parse @message \"* * * * * * * * * *\" as fullPodName, cpuUsage | stats avg(cpuUsage) by fullPodName | sort @timestamp desc",
+        "logGroupNames": [
+          "/aws/containerinsights/your-cluster-name/application"
+        ],
+        "region": "us-west-2",
+        "title": "EKS Pod Average CPU Utilization by Full Pod Name",
+        "view": "timeSeries"
+      }
+    }
+  ]
+}
+说明
+logGroupNames: 替换为你的EKS集群日志组名称。
+query: 调整查询以正确解析CPU使用情况的日志格式，并确保能够提取fullPodName和cpuUsage。
+region: 替换为你的AWS区域。
+view: 设置为timeSeries，确保图表显示为时序图。
+创建或更新仪表板
+将上面的JSON保存为eks_dashboard_cpu_avg.json文件，然后使用以下命令创建或更新CloudWatch仪表板：
+
+bash
+复制代码
+aws cloudwatch put-dashboard --dashboard-name EKS-CPUDashboard --dashboard-body file://eks_dashboard_cpu_avg.json
+注意事项
+确保你的日志格式正确，并能支持解析fullPodName和cpuUsage。
+根据需要调整filter和parse语句，以匹配你的日志内容。
+如果有更多问题或需要进一步的帮助，请告诉我！
