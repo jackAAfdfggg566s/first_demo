@@ -1,0 +1,9 @@
+Here’s the revised Slide 5 using AWS Container Insights and AWS CloudWatch Logs for monitoring EKS:
+
+Slide 5: Monitoring and Analysis
+Real-Time Monitoring: Utilize AWS Container Insights for detailed performance metrics and monitoring of EKS clusters.
+Metrics: Track CPU, memory usage, and network activity of pods and nodes.
+AWS CloudWatch Logs: Capture application logs for deeper insights.
+Log Insights: Use CloudWatch Logs Insights to analyze logs and troubleshoot issues.
+Post-Experiment Analysis: Evaluate the impact of the EC2 instance termination on application performance and resilience based on collected metrics and logs.
+Feel free to adjust any content further as needed!
