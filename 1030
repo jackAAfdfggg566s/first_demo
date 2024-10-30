@@ -1,0 +1,39 @@
+如果你想在CloudWatch仪表板中使用日志数据（比如从Container Insights获取的日志）来展示EKS Pod的CPU指标，你可以使用type: log。以下是一个示例JSON，演示如何配置CloudWatch仪表板，以从Container Insights日志中获取CPU数据。
+
+JSON示例
+json
+复制代码
+{
+  "DashboardName": "EKS-CPUDashboard",
+  "Widgets": [
+    {
+      "type": "log",
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "query": "fields @timestamp, @message | filter @message like /cpu_usage/ | sort @timestamp desc | limit 20",
+        "logGroupNames": [
+          "/aws/containerinsights/your-cluster-name/application"
+        ],
+        "region": "us-west-2",
+        "title": "EKS Pod CPU Utilization Logs"
+      }
+    }
+  ]
+}
+说明
+logGroupNames: 替换为你的EKS集群日志组名称，通常格式为/aws/containerinsights/your-cluster-name/application。
+query: 调整查询以匹配你的日志格式和需要提取的CPU指标，确保cpu_usage或相应字段是正确的。
+region: 替换为你的AWS区域。
+创建或更新仪表板
+将上面的JSON保存为eks_dashboard_logs.json文件，然后使用以下命令创建或更新CloudWatch仪表板：
+
+bash
+复制代码
+aws cloudwatch put-dashboard --dashboard-name EKS-CPUDashboard --dashboard-body file://eks_dashboard_logs.json
+注意事项
+确保Container Insights已启用，并且你的IAM角色具有必要的权限。
+根据你的日志格式调整查询以确保能正确提取CPU数据。
+这样，你就可以在CloudWatch仪表板中使用日志数据展示EKS Pod的CPU使用情况。如果还有其他问题，请继续提问！
