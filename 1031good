@@ -1,0 +1,5 @@
+fields @timestamp, @message
+| filter @message like /stopcontainer/
+| parse @message "*\\\"*" as identifier
+| stats min(@timestamp) as firstStopTime by identifier
+| sort firstStopTime asc
