@@ -1,0 +1,5 @@
+fields @timestamp, @message
+| filter @message like /stopcontainer/
+| parse @message "UUID: *" as uuid
+| stats min(@timestamp) as firstStopTime by uuid
+| sort firstStopTime asc
