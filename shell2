@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# 设置你的JAR文件路径
+JAR_PATH="/path/to/your/application.jar"
+
+# 查找正在运行的JAR进程并停止它
+PID=$(pgrep -f "$JAR_PATH")
+
+if [ -n "$PID" ]; then
+    echo "Stopping application with PID: $PID"
+    kill "$PID"
+    sleep 2  # 等待进程完全停止
+else
+    echo "No running application found."
+fi
+
+# 重新启动JAR程序
+echo "Starting the application..."
+# 在这里可以添加 IntelliJ 的启动命令或使用 java 命令直接启动
+nohup java -jar "$JAR_PATH" > /path/to/logfile.log 2>&1 &
+
+echo "Application started."
